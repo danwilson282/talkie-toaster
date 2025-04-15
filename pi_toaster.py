@@ -44,7 +44,7 @@ def ask_ollama(prompt, model="llama3"):
         return "There was a problem communicating with the AI."
 
 def voice_assistant():
-    speak("Hi! How can I help you today?")
+    print("Hi! How can I help you today?")
     # while True:
     #     user_input = transcribe_audio()
     #     if user_input:
