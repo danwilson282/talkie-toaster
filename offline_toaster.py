@@ -65,10 +65,11 @@ def recognize_speech_realtime(model_path):
 
     mic = pyaudio.PyAudio()
     stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8192)
-    stream.start_stream()
+    
     process_response(DEFAULT_PROMPT)
     print("Listening... (Press Ctrl+C to stop)")
     beep(frequency=1000, duration=0.1)
+    stream.start_stream()
     try:
         while True:
             if not is_speaking:  # Only listen if not speaking
