@@ -1,9 +1,10 @@
 import speech_recognition as sr
-import pyttsx3
 import requests
 import json
 from gtts import gTTS
 import os
+import numpy as np
+import pygame
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 os.environ["SDL_AUDIODRIVER"] = "alsa"
 os.environ["ALSA_CARD"] = "2"  # Optional
@@ -63,17 +64,49 @@ def sendToLlama(text):
 
 def voice_assistant():
     response = sendToLlama(DEFAULT_PROMPT)
+    print(f"🍞 Toaster: {response}")
     speak(response)
     while True:
         user_input = transcribe_audio()
         if user_input:
+            beep(frequency=440, duration=0.1)
             print(f"👤 You said: {user_input}")
             if user_input.lower() in ["exit", "quit", "stop"]:
                 speak("Goodbye!")
                 break
             response = sendToLlama(user_input)
-            print(f"🤖 Toaster: {response}")
+            print(f"🍞 Toaster: {response}")
             speak(response)
+            beep(frequency=1000, duration=0.1)
+
+def generate_beep_sound(frequency=440, duration=0.5, sample_rate=44100):
+    # Generate a sine wave for the beep sound
+    t = np.linspace(0, duration, int(sample_rate * duration), False)
+    wave = np.sin(frequency * 2 * np.pi * t)
+    
+    # Normalize the wave to 16-bit range
+    wave = np.int16(wave * 32767)
+    
+    # Convert to stereo (2 channels)
+    wave = np.column_stack((wave, wave))
+    
+    return wave
+
+def beep(frequency=440, duration=0.5, sample_rate=44100):
+    # Initialize pygame mixer
+    pygame.mixer.init(sample_rate, -16, 2, 2048)
+    
+    # Generate the beep sound
+    beep_sound = generate_beep_sound(frequency, duration, sample_rate)
+    
+    # Create a pygame Sound object
+    sound = pygame.sndarray.make_sound(beep_sound)
+    
+    # Play the sound
+    sound.play()
+    
+    # Wait for the sound to finish playing
+    pygame.time.wait(int(duration * 1000))
 
 # Run it
 if __name__ == "__main__":
