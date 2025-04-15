@@ -16,9 +16,6 @@ def speak(text):
     engine.say(text)
     engine.runAndWait()
 
-# Test it
-speak("Hello from your Raspberry Pi!")
-
 def transcribe_audio():
     recognizer = sr.Recognizer()
     with sr.Microphone(device_index=1) as source:
