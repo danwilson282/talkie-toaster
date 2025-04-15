@@ -15,7 +15,7 @@ def speak(text):
 
     engine.say(text)
     engine.runAndWait()
-
+speak("Hi! How can I help you today?")
 def transcribe_audio():
     recognizer = sr.Recognizer()
     with sr.Microphone(device_index=1) as source:
