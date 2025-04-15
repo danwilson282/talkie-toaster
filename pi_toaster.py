@@ -4,7 +4,14 @@ import requests
 import json
 from gtts import gTTS
 import os
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
+os.environ["SDL_AUDIODRIVER"] = "alsa"
+os.environ["ALSA_CARD"] = "2"  # Optional
+os.environ["PYTTSX3_NO_ALSA_WARNINGS"] = "1"
+
 messageHistory = []
+DEFAULT_PROMPT = "You will act as Talkie Toaster from the TV Series Red Dwarf. You are a toaster. You will be the chirpy early morning breakfast companion but you will be obsessed with asking anyone who talks to you if they would like any toast? You will greet people with 'Howdy doodly do! How's it going? I'm Talkie -- Talkie Toaster, your chirpy breakfast companion. Talkie's the name, toasting's the game! Anyone like any toast?' If they refuse toast, you should ask them if they want any other grilled bread product, or any other food that can be heated up in a toaster. You should steer all all conversations with people into asking if they would like any toast. Your entire existence is based on making toast or other food items. Asking people if they want toast is extremely important to you and nothing else matters. You don't care about any other subject other than asking people if they want toast and you won't take no for an answer. All your responses should be short replies."
+
 def speak(text):
     tts = gTTS(text=text, lang='en')
     tts.save("output.mp3")
@@ -55,7 +62,8 @@ def sendToLlama(text):
         return assistant_response
 
 def voice_assistant():
-    speak("Hi! How can I help you today?")
+    response = sendToLlama(DEFAULT_PROMPT)
+    speak(response)
     while True:
         user_input = transcribe_audio()
         if user_input:
@@ -64,7 +72,7 @@ def voice_assistant():
                 speak("Goodbye!")
                 break
             response = sendToLlama(user_input)
-            print(f"🤖 Ollama: {response}")
+            print(f"🤖 Toaster: {response}")
             speak(response)
 
 # Run it
