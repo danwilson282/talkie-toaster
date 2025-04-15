@@ -2,20 +2,16 @@ import speech_recognition as sr
 import pyttsx3
 import requests
 
+from gtts import gTTS
+import os
 
 def speak(text):
-    engine = pyttsx3.init(driverName='espeak')
-    engine.setProperty('rate', 200)
-    engine.setProperty('volume', 1.0)
+    tts = gTTS(text=text, lang='en')
+    tts.save("output.mp3")
+    os.system("mpg123 output.mp3")
 
-    # Get list of available voices and pick the first one
-    voices = engine.getProperty('voices')
-    if voices:
-        engine.setProperty('voice', voices[11].id)
+speak("Hello, I am using Google Text to Speech.")
 
-    engine.say(text)
-    engine.runAndWait()
-speak("Hi! How can I help you today?")
 def transcribe_audio():
     recognizer = sr.Recognizer()
     with sr.Microphone(device_index=1) as source:
