@@ -1,4 +1,6 @@
 /vosk-model-small-en-gb-0.15
+/toaster
+if
 *.pbmm
 *.scorer
 *.mp3
