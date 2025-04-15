@@ -9,7 +9,7 @@ def speak(text):
 
 def transcribe_audio():
     recognizer = sr.Recognizer()
-    with sr.Microphone(device_index=2) as source:
+    with sr.Microphone(device_index=1) as source:
         print("🎤 Listening...")
         recognizer.adjust_for_ambient_noise(source)
         audio = recognizer.listen(source)
