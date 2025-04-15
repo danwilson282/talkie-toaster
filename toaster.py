@@ -17,7 +17,7 @@ import pygame
 import sounddevice as sd
 import os
 import random
-import speech_recognition as sr
+# import speech_recognition as sr
 
 logging.basicConfig(level=20)
 
