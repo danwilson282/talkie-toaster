@@ -41,16 +41,16 @@ def ask_ollama(prompt, model="llama3"):
 
 def voice_assistant():
     speak("Hi! How can I help you today?")
-    while True:
-        user_input = transcribe_audio()
-        if user_input:
-            print(f"👤 You said: {user_input}")
-            if user_input.lower() in ["exit", "quit", "stop"]:
-                speak("Goodbye!")
-                break
-            response = ask_ollama(user_input)
-            print(f"🤖 Ollama: {response}")
-            speak(response)
+    # while True:
+    #     user_input = transcribe_audio()
+    #     if user_input:
+    #         print(f"👤 You said: {user_input}")
+    #         if user_input.lower() in ["exit", "quit", "stop"]:
+    #             speak("Goodbye!")
+    #             break
+    #         response = ask_ollama(user_input)
+    #         print(f"🤖 Ollama: {response}")
+    #         speak(response)
 
 # Run it
 if __name__ == "__main__":
