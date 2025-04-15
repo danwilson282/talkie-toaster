@@ -1,10 +1,10 @@
 import speech_recognition as sr
 import pyttsx3
 import requests
-
+import json
 from gtts import gTTS
 import os
-
+messageHistory = []
 def speak(text):
     tts = gTTS(text=text, lang='en')
     tts.save("output.mp3")
@@ -27,20 +27,32 @@ def transcribe_audio():
         speak("Speech recognition service is down.")
         return None
 
-def ask_ollama(prompt, model="llama3"):
-    url = "http://localhost:11434/api/generate"
-    payload = {
-        "model": model,
-        "prompt": prompt,
-        "stream": False
-    }
-    try:
-        response = requests.post(url, json=payload)
-        response.raise_for_status()
-        return response.json().get("response", "").strip()
-    except requests.RequestException as e:
-        print(f"💥 Error: {e}")
-        return "There was a problem communicating with the AI."
+def sendToLlama(text):
+    global messageHistory
+    if len(text) > 1:
+        # Save last 20 messages
+        if len(messageHistory) >= 20:
+            messageHistory.pop(0)  # Remove the oldest message
+        messageHistory.append({
+            "role": "user",
+            "content": text
+        })
+
+        url = 'http://localhost:11434/api/chat'
+        myobj = {
+            "model": "llama3.2",
+            "messages": messageHistory,
+            "stream": False
+        }
+
+        x = requests.post(url, json=myobj)
+        response = json.loads(x.text)
+        assistant_response = response['message']['content']
+        messageHistory.append({
+            "role": "assistant",
+            "content": assistant_response
+        })
+        return assistant_response
 
 def voice_assistant():
     speak("Hi! How can I help you today?")
@@ -51,7 +63,7 @@ def voice_assistant():
             if user_input.lower() in ["exit", "quit", "stop"]:
                 speak("Goodbye!")
                 break
-            response = ask_ollama(user_input)
+            response = sendToLlama(user_input)
             print(f"🤖 Ollama: {response}")
             speak(response)
 
