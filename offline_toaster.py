@@ -94,6 +94,7 @@ def recognize_speech_realtime(model_path):
 
 def process_response(text):
     global is_speaking
+    is_speaking = True
     response_from_model = sendToLlama(text)
     print(f"Toaster:  '{response_from_model}'")
     text_to_speech(response_from_model)
