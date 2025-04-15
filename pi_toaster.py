@@ -2,20 +2,22 @@ import speech_recognition as sr
 import pyttsx3
 import requests
 
-engine = pyttsx3.init(driverName='espeak')
-voices = engine.getProperty('voices')
 
-for voice in voices:
-    print(f"ID: {voice.id}, Name: {voice.name}")
-
-engine.setProperty('rate', 200)  # Speed of speech (words per minute)
-engine.setProperty('volume', 1.0)  # Volume level (0.0 to 1.0)
-engine.setProperty('voice', voices[11].id)  # You can change the voice/language
 def speak(text):
-    global engine
-    print(engine)
+    engine = pyttsx3.init(driverName='espeak')
+    engine.setProperty('rate', 200)
+    engine.setProperty('volume', 1.0)
+
+    # Get list of available voices and pick the first one
+    voices = engine.getProperty('voices')
+    if voices:
+        engine.setProperty('voice', voices[11].id)
+
     engine.say(text)
     engine.runAndWait()
+
+# Test it
+speak("Hello from your Raspberry Pi!")
 
 def transcribe_audio():
     recognizer = sr.Recognizer()
