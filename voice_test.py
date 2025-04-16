@@ -13,7 +13,7 @@ def speak_annoying_male(text):
     # 3. Lower pitch and slow it down slightly
     subprocess.run([
         "sox", "normal.wav", "bro_voice.wav",
-        "pitch", "100", "speed", "1.1"
+        "pitch", "200", "speed", "1.3"
     ])
 
     # 4. Play it
