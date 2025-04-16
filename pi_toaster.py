@@ -6,6 +6,8 @@ import os
 import numpy as np
 import pygame
 import subprocess
+import logging
+logging.disable(logging.CRITICAL)
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 os.environ["SDL_AUDIODRIVER"] = "alsa"
 os.environ["ALSA_CARD"] = "2"  # Optional
