@@ -78,6 +78,7 @@ def voice_assistant():
     response = sendToLlama(DEFAULT_PROMPT)
     print(f"🍞 Toaster: {response}")
     speak(response)
+    beep(frequency=1000, duration=0.1)
     while True:
         user_input = transcribe_audio()
         if user_input:
