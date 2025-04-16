@@ -24,8 +24,9 @@ def speak(text):
     # 3. Lower pitch and slow it down slightly
     subprocess.run([
         "sox", "output.wav", "toaster_voice.wav",
-        "pitch", "200", "speed", "1.3"
-    ])
+        "pitch", "200", "speed", "1.3"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL)
 
     # 4. Play it
     subprocess.run(["aplay", "toaster_voice.wav"])
