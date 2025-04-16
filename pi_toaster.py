@@ -19,7 +19,7 @@ def speak(text):
     tts.save("output.mp3")
     # os.system("mpg123 output.mp3")
     # 2. Convert to WAV for pitch processing
-    os.system("ffmpeg -y -i output.mp3 outputwav")
+    os.system("ffmpeg -y -i output.mp3 output.wav")
 
     # 3. Lower pitch and slow it down slightly
     subprocess.run([
