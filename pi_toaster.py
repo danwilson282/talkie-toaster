@@ -19,7 +19,6 @@ DEFAULT_PROMPT = "You will act as Talkie Toaster from the TV Series Red Dwarf. Y
 def speak(text):
     tts = gTTS(text=text, lang='en', tld='com')
     tts.save("output.mp3")
-    # os.system("mpg123 output.mp3")
     # 2. Convert to WAV for pitch processing
     os.system("ffmpeg -y -i output.mp3 output.wav")
 
@@ -87,7 +86,8 @@ def voice_assistant():
         if user_input:
             beep(frequency=440, duration=0.1)
             print(f"👤 You said: {user_input}")
-            if user_input.lower() in ["exit", "quit", "stop"]:
+            if user_input.lower() in ["exit", "quit", "stop", "goodbye", "bye"]:
+                print("👋 Goodbye!")
                 speak("Goodbye!")
                 break
             response = sendToLlama(user_input)
