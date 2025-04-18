@@ -8,6 +8,7 @@ import pygame
 import subprocess
 import logging
 import pyaudio
+import wave
 # import RPi.GPIO as GPIO
 
 logging.disable(logging.CRITICAL)
