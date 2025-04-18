@@ -7,12 +7,19 @@ import numpy as np
 import pygame
 import subprocess
 import logging
+import pyaudio
+import RPi.GPIO as GPIO
+
 logging.disable(logging.CRITICAL)
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 os.environ["SDL_AUDIODRIVER"] = "alsa"
 os.environ["ALSA_CARD"] = "2"  # Optional
 os.environ["PYTTSX3_NO_ALSA_WARNINGS"] = "1"
-
+LED_PIN = 18
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(LED_PIN, GPIO.OUT)
+pwm = GPIO.PWM(LED_PIN, 100)  # 100Hz PWM
+pwm.start(0)
 messageHistory = []
 DEFAULT_PROMPT = "You will act as Talkie Toaster from the TV Series Red Dwarf. You are a toaster. You will be the chirpy early morning breakfast companion but you will be obsessed with asking anyone who talks to you if they would like any toast? You will greet people with 'Howdy doodly do! How's it going? I'm Talkie -- Talkie Toaster, your chirpy breakfast companion. Talkie's the name, toasting's the game! Anyone like any toast?' If they refuse toast, you should ask them if they want any other grilled bread product, or any other food that can be heated up in a toaster. You should steer all all conversations with people into asking if they would like any toast. Your entire existence is based on making toast or other food items. Asking people if they want toast is extremely important to you and nothing else matters. You don't care about any other subject other than asking people if they want toast and you won't take no for an answer. All your responses should be short replies."
 
@@ -30,7 +37,48 @@ def speak(text):
         stderr=subprocess.DEVNULL)
 
     # 4. Play it
-    subprocess.run(["aplay", "toaster_voice.wav"])
+    # subprocess.run(["aplay", "toaster_voice.wav"])
+    play_audio_with_visualizer("toaster_voice.wav")
+
+def print_volume_bar(volume, max_length=50):
+    bar_length = int(volume * max_length)
+    bar = '█' * bar_length
+    space = ' ' * (max_length - bar_length)
+    print(f"\r|{bar}{space}| {int(volume * 100)}%", end='', flush=True)
+
+def play_audio_with_visualizer(filename):
+    # Open WAV file
+    wf = wave.open(filename, 'rb')
+    CHUNK = 1024
+
+    # Set up PyAudio
+    p = pyaudio.PyAudio()
+    stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
+                    channels=wf.getnchannels(),
+                    rate=wf.getframerate(),
+                    output=True)
+
+    try:
+        print("Playing audio... Press Ctrl+C to stop.")
+        data = wf.readframes(CHUNK)
+        while data:
+            stream.write(data)
+
+            # Analyze volume
+            audio_data = np.frombuffer(data, dtype=np.int16)
+            volume = np.abs(audio_data).mean() / 32768  # normalize 0–1
+
+            # Show volume bar in terminal
+            print_volume_bar(volume)
+            pwm.ChangeDutyCycle(min(volume * 100, 100))
+            data = wf.readframes(CHUNK)
+
+        print("\nDone.")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        p.terminate()
+        pwm.ChangeDutyCycle(0)
 
 def transcribe_audio():
     recognizer = sr.Recognizer()
