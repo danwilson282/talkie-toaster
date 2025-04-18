@@ -8,18 +8,19 @@ import pygame
 import subprocess
 import logging
 import pyaudio
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 
 logging.disable(logging.CRITICAL)
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 os.environ["SDL_AUDIODRIVER"] = "alsa"
 os.environ["ALSA_CARD"] = "2"  # Optional
 os.environ["PYTTSX3_NO_ALSA_WARNINGS"] = "1"
+# GPIO input
 LED_PIN = 18
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(LED_PIN, GPIO.OUT)
-pwm = GPIO.PWM(LED_PIN, 100)  # 100Hz PWM
-pwm.start(0)
+# GPIO.setmode(GPIO.BCM)
+# GPIO.setup(LED_PIN, GPIO.OUT)
+# pwm = GPIO.PWM(LED_PIN, 100)  # 100Hz PWM
+# pwm.start(0)
 messageHistory = []
 DEFAULT_PROMPT = "You will act as Talkie Toaster from the TV Series Red Dwarf. You are a toaster. You will be the chirpy early morning breakfast companion but you will be obsessed with asking anyone who talks to you if they would like any toast? You will greet people with 'Howdy doodly do! How's it going? I'm Talkie -- Talkie Toaster, your chirpy breakfast companion. Talkie's the name, toasting's the game! Anyone like any toast?' If they refuse toast, you should ask them if they want any other grilled bread product, or any other food that can be heated up in a toaster. You should steer all all conversations with people into asking if they would like any toast. Your entire existence is based on making toast or other food items. Asking people if they want toast is extremely important to you and nothing else matters. You don't care about any other subject other than asking people if they want toast and you won't take no for an answer. All your responses should be short replies."
 
@@ -70,7 +71,7 @@ def play_audio_with_visualizer(filename):
 
             # Show volume bar in terminal
             print_volume_bar(volume)
-            pwm.ChangeDutyCycle(min(volume * 100, 100))
+            # pwm.ChangeDutyCycle(min(volume * 100, 100))
             data = wf.readframes(CHUNK)
 
         print("\nDone.")
@@ -78,7 +79,7 @@ def play_audio_with_visualizer(filename):
         stream.stop_stream()
         stream.close()
         p.terminate()
-        pwm.ChangeDutyCycle(0)
+        # pwm.ChangeDutyCycle(0)
 
 def transcribe_audio():
     recognizer = sr.Recognizer()
